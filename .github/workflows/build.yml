@@ -31,28 +31,21 @@ jobs:
           find . -name "*.map" -type f -delete
           cd ../.. && zip -r - frontend/build >assets.zip
 
+      - name: Setup FreeBSD base
+        run: |
+          wget -q https://download.freebsd.org/releases/amd64/14.1-RELEASE/base.txz
+          sudo mkdir -p /opt/freebsd && sudo tar -xf ./base.txz -C /opt/freebsd
+
       - name: Build binaries
-        uses: vmactions/freebsd-vm@v1
-        with:
-          usesh: true
-          release: 13.2
-          prepare: |
-            pkg install -y wget curl git gcc bash gawk gsed
-            wget https://dl.google.com/go/go1.22.0.freebsd-amd64.tar.gz && tar -C /usr/local -xzf go1.22.0.freebsd-amd64.tar.gz && rm go1.22.0.freebsd-amd64.tar.gz
-            ln -s /usr/local/go/bin/go /usr/local/bin/go
-          run: |
-            export LATEST_APP=$(wget -qO- https://api.github.com/repos/cloudreve/Cloudreve/tags | gawk -F '["v]' '/name/{print $4;exit}')
-            git clone -b $LATEST_APP --recurse-submodules https://github.com/cloudreve/Cloudreve
-            cd Cloudreve
-            rm -rf assets && mv -f ../frontend ./assets && cp ../assets.zip ./assets.zip
-            export ldflags="\
-            -X 'github.com/cloudreve/Cloudreve/v3/pkg/conf.BackendVersion={{.Tag}}' \
-            -X 'github.com/cloudreve/Cloudreve/v3/pkg/conf.LastCommit={{.ShortCommit}}' \
-            "
-            go mod tidy
-            GOOS=freebsd GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="$ldflags" -o cloudreve && cp cloudreve ../cloudreve
-            cd .. && mkdir -p target && mv -f Cloudreve/assets/build target/statics && mv -f cloudreve target/cloudreve && cd target && tar -czvf ../cloudreve-freebsd-amd64.tar.gz *
-            cd ..
+        run: |
+          export LATEST_APP=$(wget -qO- https://api.github.com/repos/cloudreve/Cloudreve/tags | gawk -F '["v]' '/name/{print $4;exit}')
+          git clone -b $LATEST_APP --recurse-submodules https://github.com/cloudreve/Cloudreve
+          cd Cloudreve
+          rm -rf assets && mv -f ../frontend ./assets && cp ../assets.zip ./assets.zip
+          bash ../build.sh
+          cp cloudreve ../cloudreve
+          cd .. && mkdir -p target && mv -f Cloudreve/assets/build target/statics && mv -f cloudreve target/cloudreve && cd target && tar -czvf ../cloudreve-freebsd-amd64.tar.gz *
+          cd ..
 
       # - name: Upload artifact
       #   uses: actions/upload-artifact@main
