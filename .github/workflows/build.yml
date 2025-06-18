@@ -33,7 +33,7 @@ jobs:
 
       - name: Setup FreeBSD base
         run: |
-          wget -q https://download.freebsd.org/releases/amd64/14.1-RELEASE/base.txz
+          wget -q https://download.freebsd.org/releases/amd64/14.3-RELEASE/base.txz
           sudo mkdir -p /opt/freebsd && sudo tar -xf ./base.txz -C /opt/freebsd
 
       - name: Build binaries
