@@ -1,37 +1,43 @@
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+
 <a id="readme-top"></a>
 
-<!-- PROJECT SHIELDS -->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![project_license][license-shield]][license-url]
 
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <h3 align="center">Cloudreve FreeBSD</h3>
+  <a href="https://github.com/LoveDoLove/cloudreve-freebsd">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+<h3 align="center">Cloudreve FreeBSD Build Automation</h3>
 
   <p align="center">
-    Automated builds of Cloudreve for FreeBSD
+    Automated build and packaging scripts for Cloudreve on FreeBSD (amd64)
     <br />
-    <a href="https://docs.cloudreve.org/"><strong>Explore the Cloudreve docs »</strong></a>
+    <a href="https://github.com/LoveDoLove/cloudreve-freebsd"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/LoveDoLove/cloudreve-freebsd/releases">Download</a>
-    ·
-    <a href="https://github.com/LoveDoLove/cloudreve-freebsd/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/LoveDoLove/cloudreve-freebsd/issues">Request Feature</a>
+    <a href="https://github.com/LoveDoLove/cloudreve-freebsd">View Demo</a>
+    &middot;
+    <a href="https://github.com/LoveDoLove/cloudreve-freebsd/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    &middot;
+    <a href="https://github.com/LoveDoLove/cloudreve-freebsd/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
-<!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -41,8 +47,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#automated-builds">Automated Builds</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -50,101 +54,71 @@
   </ol>
 </details>
 
-<!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This repository provides automated builds of [Cloudreve](https://github.com/cloudreve/Cloudreve) for FreeBSD systems. Cloudreve is a self-hosted file management system that supports multiple cloud storage providers.
+This project provides scripts and GitHub Actions workflows to automate the process of building and packaging the [Cloudreve](https://github.com/cloudreve/Cloudreve) cloud storage system for FreeBSD (amd64). It is not the main Cloudreve repository, but a community-maintained solution for producing up-to-date FreeBSD binaries and release packages.
 
-### What is Cloudreve?
+**Key Features:**
 
-Cloudreve is a powerful self-hosted file management system with multi-cloud storage support, featuring:
-
-* Support for multiple storage backends (Local, Remote, S3 compatible, OneDrive, and more)
-* Direct client-to-storage provider file transfers
-* Integration with Aria2/qBittorrent for background downloads
-* WebDAV support for all storage providers
-* Multi-user management with group-based permissions
-* File sharing with expiration dates
-* Online preview for various file types (documents, images, videos)
-* Customizable themes and dark mode
-
-This repo specifically provides FreeBSD builds of Cloudreve through an automated GitHub Actions workflow that builds the latest version daily.
+- Automated cross-compilation of Cloudreve for FreeBSD (amd64)
+- GitHub Actions CI/CD for building, packaging, and releasing binaries
+- Easy-to-use build script (`build.sh`) for local or CI use
+- Packaging of frontend assets and backend into a single distributable archive
+- Community issue templates for bug reports and feature requests
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- GETTING STARTED -->
+### Built With
+
+- [Go](https://golang.org/)
+- [GitHub Actions](https://github.com/features/actions)
+- [Cloudreve (Upstream)](https://github.com/cloudreve/Cloudreve)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Getting Started
+
+To build Cloudreve for FreeBSD locally or contribute to this automation, follow these steps.
 
 ### Prerequisites
 
-* A FreeBSD system (amd64 architecture)
-* Basic familiarity with FreeBSD command line
+- Go (latest recommended)
+- Bash shell (for `build.sh`)
+- FreeBSD 14.1+ sysroot (downloaded automatically in CI, see workflow)
+- Clang cross-compiler targeting FreeBSD amd64
+- Git
 
 ### Installation
 
-1. Download the latest release from the [Releases page](https://github.com/LoveDoLove/cloudreve-freebsd/releases)
-2. Extract the archive
+1. Clone this repository:
    ```sh
-   tar -xzvf cloudreve-freebsd-amd64.tar.gz
+   git clone https://github.com/LoveDoLove/cloudreve-freebsd.git
+   cd cloudreve-freebsd
    ```
-3. Make the binary executable
+2. Ensure you have Go and Clang cross-compiler for FreeBSD installed.
+3. (Optional) Download or build the latest frontend assets and place `assets.zip` in the project root.
+4. Run the build script:
    ```sh
-   chmod +x cloudreve
+   bash build.sh
    ```
-4. Run Cloudreve
-   ```sh
-   ./cloudreve
-   ```
+   The script will fetch dependencies, set up environment variables, and build the Cloudreve binary for FreeBSD.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-After installation, you can access the Cloudreve web interface by visiting `http://your-server-ip:5212` in your browser.
+- After running `build.sh`, the resulting `cloudreve` binary (for FreeBSD amd64) will be in the project directory.
+- The script also packages frontend assets if `assets.zip` is present.
+- For automated builds and releases, see the GitHub Actions workflows in `.github/workflows/`.
+- The produced tarball (`cloudreve-freebsd-amd64.tar.gz`) contains the binary and static assets, ready for deployment on FreeBSD systems.
 
-During the first run, Cloudreve will:
-1. Generate a random password for the admin account
-2. Display login credentials in the console output
-
-For more detailed usage instructions, please refer to the [Cloudreve Documentation](https://docs.cloudreve.org/)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- AUTOMATED BUILDS -->
-## Automated Builds
-
-This repository includes GitHub Actions workflows that:
-
-1. Pulls the latest Cloudreve source code from the official repository
-2. Builds the Cloudreve frontend
-3. Sets up a FreeBSD build environment
-4. Cross-compiles Cloudreve for FreeBSD amd64
-5. Creates and publishes a release with the compiled binary
-
-Builds are triggered:
-- Daily at midnight (UTC)
-- Manually when needed
+_For more details, see the [Cloudreve documentation](https://github.com/cloudreve/Cloudreve#readme)._
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ROADMAP -->
-## Roadmap
-
-- [ ] Support for FreeBSD arm64 architecture
-- [ ] Provide FreeBSD package/port
-- [ ] Add SystemD service file
-
-See the [open issues](https://github.com/LoveDoLove/cloudreve-freebsd/issues) for a full list of proposed features and known issues.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Contributions are welcome! Please use the provided issue templates for bug reports and feature requests. Fork the repo, create a feature branch, and submit a pull request.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -154,27 +128,23 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- LICENSE -->
+### Top contributors:
+
+<a href="https://github.com/LoveDoLove/cloudreve-freebsd/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=LoveDoLove/cloudreve-freebsd" alt="contrib.rocks image" />
+</a>
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-Note that while this build project is MIT licensed, Cloudreve itself is licensed under GPL-3.0.
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- CONTACT -->
 ## Contact
 
+LoveDoLove - [GitHub](https://github.com/LoveDoLove)
+
 Project Link: [https://github.com/LoveDoLove/cloudreve-freebsd](https://github.com/LoveDoLove/cloudreve-freebsd)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* [Cloudreve](https://github.com/cloudreve/Cloudreve) - The original Cloudreve project
-* [FreeBSD](https://www.freebsd.org/) - The FreeBSD operating system
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -182,8 +152,18 @@ Project Link: [https://github.com/LoveDoLove/cloudreve-freebsd](https://github.c
 
 This project is proudly supported by [ZMTO](https://www.zmto.com) as part of their open-source VPS program. We extend our sincere gratitude to ZMTO for their valuable resources and commitment to empowering open-source innovation.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Acknowledgments
+
+- [Cloudreve](https://github.com/cloudreve/Cloudreve)
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+- [GitHub Actions](https://github.com/features/actions)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/LoveDoLove/cloudreve-freebsd.svg?style=for-the-badge
 [contributors-url]: https://github.com/LoveDoLove/cloudreve-freebsd/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/LoveDoLove/cloudreve-freebsd.svg?style=for-the-badge
@@ -193,4 +173,5 @@ This project is proudly supported by [ZMTO](https://www.zmto.com) as part of the
 [issues-shield]: https://img.shields.io/github/issues/LoveDoLove/cloudreve-freebsd.svg?style=for-the-badge
 [issues-url]: https://github.com/LoveDoLove/cloudreve-freebsd/issues
 [license-shield]: https://img.shields.io/github/license/LoveDoLove/cloudreve-freebsd.svg?style=for-the-badge
-[license-url]: https://github.com/LoveDoLove/cloudreve-freebsd/blob/master/LICENSE
+[license-url]: https://github.com/LoveDoLove/cloudreve-freebsd/blob/main/LICENSE
+[product-screenshot]: images/logo.png
